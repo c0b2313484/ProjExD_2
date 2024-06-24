@@ -13,6 +13,19 @@ DELTA = {  # 移動量辞書
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(rct: pg.rect) -> tuple[bool, bool]:
+    """
+    引数：こうかとんRect、または爆弾Rect
+    戻り値：真理値タプル（横方向、縦方向）
+    画面内ならTrue/画面外ならFalse
+    """
+    yoko, tate = True, True
+    if rct.left < 0 or WIDTH < rct.right:  # 横方向にはみ出していたらFalse
+        yoko = False
+    if rct.top < 0 or HEIGHT < rct.bottom:  # 縦方向にはみ出していたらFalse
+        tate = False
+    return yoko, tate
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -25,12 +38,12 @@ def main():
     bb_img = pg.Surface((20, 20))  # 20*20の黒いの範囲
     bb_img.set_colorkey((0, 0, 0))  # 爆弾の黒い部分を透明に
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # 半径10の赤色の円を描写
-    bb_rct = bb_img.get_rect()
+    bb_rct = bb_img.get_rect()  # 爆弾rect
     bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)  # 爆弾の中心座標にx, yの値を設定
     vx, vy = +5, +5  # 爆弾の横方向速度vx、縦方向速度vy
     clock = pg.time.Clock()
     tmr = 0
-    
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -41,15 +54,20 @@ def main():
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
-        if key_lst[pg.K_UP]:
-            sum_mv[1] -= 5
-        if key_lst[pg.K_DOWN]:
-            sum_mv[1] += 5
-        if key_lst[pg.K_LEFT]:
-            sum_mv[0] -= 5
-        if key_lst[pg.K_RIGHT]:
-            sum_mv[0] += 5
+        for k, v in DELTA.items():  # 辞書からkeyとvalueをとる
+            if key_lst[k]:
+                sum_mv[0] += v[0]
+                sum_mv[1] += v[1]
         kk_rct.move_ip(sum_mv)
+        # if key_lst[pg.K_UP]:
+        #     sum_mv[1] -= 5
+        # if key_lst[pg.K_DOWN]:
+        #     sum_mv[1] += 5
+        # if key_lst[pg.K_LEFT]:
+        #     sum_mv[0] -= 5
+        # if key_lst[pg.K_RIGHT]:
+        #     sum_mv[0] += 5
+        
         screen.blit(kk_img, kk_rct)
         pg.display.update()
         tmr += 1

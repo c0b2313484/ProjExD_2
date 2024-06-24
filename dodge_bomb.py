@@ -9,11 +9,11 @@ DELTA = {  # 移動量辞書
     pg.K_UP: (0, -5),
     pg.K_DOWN: (0, +5),
     pg.K_LEFT: (-5, 0),
-    pg.K_RIGHT: (+5, 0)
+    pg.K_RIGHT: (+5, 0),
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-def check_bound(rct: pg.rect) -> tuple[bool, bool]:
+def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     """
     引数：こうかとんRect、または爆弾Rect
     戻り値：真理値タプル（横方向、縦方向）
@@ -49,8 +49,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         screen.blit(bg_img, [0, 0]) 
-        bb_rct.move_ip(vx, vy)  # move_ipは爆弾を動かす
-        screen.blit(bb_img, bb_rct)  #bb_img(爆弾)をbb_rct()の位置に表示
+        # screen.blit(bb_img, bb_rct)  #bb_img(爆弾)をbb_rct()の位置に表示
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
@@ -59,16 +58,18 @@ def main():
                 sum_mv[0] += v[0]
                 sum_mv[1] += v[1]
         kk_rct.move_ip(sum_mv)
-        # if key_lst[pg.K_UP]:
-        #     sum_mv[1] -= 5
-        # if key_lst[pg.K_DOWN]:
-        #     sum_mv[1] += 5
-        # if key_lst[pg.K_LEFT]:
-        #     sum_mv[0] -= 5
-        # if key_lst[pg.K_RIGHT]:
-        #     sum_mv[0] += 5
-        
+        if check_bound(kk_rct) != (True, True):
+            kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
+
+        bb_rct.move_ip(vx, vy)  # move_ipは爆弾を動かす
+        yoko, tate  = check_bound(bb_rct)
+        if not yoko:  # 爆弾が横にはみ出た場合
+            vx *= -1
+        if not tate:  # 爆弾が縦にはみ出た場合
+            vy *= -1
+        screen.blit(bb_img, bb_rct)
+
         pg.display.update()
         tmr += 1
         clock.tick(50)

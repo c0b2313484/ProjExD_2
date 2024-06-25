@@ -45,6 +45,20 @@ def game_over():
     clock = pg.time.Clock()
     clock.time(5)
 
+def kk_chenge():
+    """
+    飛ぶ方向に従ってこうかとん画像を切り替える関数
+    戻り値：辞書（移動量の合計値のタプル、rotezoomしたSurface)
+    """
+    kk_dict = {}
+    DETA = {  # 押下移動量
+        pg.K_UP: (0, -5),
+        pg.K_DOWN: (0, +5),
+        pg.K_LEFT: (-5, 0),
+        pg.K_RIGHT: (+5, 0),
+    }
+    return 
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))

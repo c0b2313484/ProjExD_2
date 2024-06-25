@@ -2,8 +2,6 @@ import os
 import random
 import sys
 import pygame as pg
-import time
-
 
 WIDTH, HEIGHT = 1600, 900
 DELTA = {  # 移動量辞書 
@@ -29,28 +27,23 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
 #rct: pg.Rect) -> tuple[bool, bool]:
 def game_over():
     """
-    引数：ブラックアウトRect
-    戻り値：真理値
-    実行中ならTrue/ゲームアウトならFalse
+    ゲームオーバー画面を表示する関数
+    ゲームアウト後に画面をブラックアウト
+    Game Overの文字列表示
     """
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bl_out = pg.Surface((WIDTH, HEIGHT))  # Surfaceを作成
     pg.draw.rect(bl_out, 0, 0, WIDTH, HEIGHT)  # ブラックアウト画面を描画
     bl_out.set_alpha((150))  # 画面を半透明にする
     screen.blit(bl_out, [1600, 900])
-
     fonto = pg.font.Font(None, 80)  # フォントサイズを指定
-    txt = fonto.render("Game Over", True, (255, 255, 255))
+    txt = fonto.render("Game Over", True, (255, 255, 255))  # GameOverの文字描写
     screen.blit(txt, [WIDTH/2, HEIGHT/2])
-
-    img = pg.image.load("fig/8.png")  #画面Surface
+    img = pg.image.load("fig/8.png")  # 画面Surface
     screen.blit(img, [WIDTH/2-200, HEIGHT/2])
     pg.display.update()
     clock = pg.time.Clock()
     clock.time(5)
-    # time.sleep(5)
-    # game = True
-    # if 
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -102,7 +95,6 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
-
 
 
 if __name__ == "__main__":

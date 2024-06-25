@@ -2,6 +2,7 @@ import os
 import random
 import sys
 import pygame as pg
+import time
 
 
 WIDTH, HEIGHT = 1600, 900
@@ -25,7 +26,31 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or HEIGHT < rct.bottom:  # 縦方向にはみ出していたらFalse
         tate = False
     return yoko, tate
+#rct: pg.Rect) -> tuple[bool, bool]:
+def game_over():
+    """
+    引数：ブラックアウトRect
+    戻り値：真理値
+    実行中ならTrue/ゲームアウトならFalse
+    """
+    screen = pg.display.set_mode((WIDTH, HEIGHT))
+    bl_out = pg.Surface((WIDTH, HEIGHT))  # Surfaceを作成
+    pg.draw.rect(bl_out, 0, 0, WIDTH, HEIGHT)  # ブラックアウト画面を描画
+    bl_out.set_alpha((150))  # 画面を半透明にする
+    screen.blit(bl_out, [1600, 900])
 
+    fonto = pg.font.Font(None, 80)  # フォントサイズを指定
+    txt = fonto.render("Game Over", True, (255, 255, 255))
+    screen.blit(txt, [WIDTH/2, HEIGHT/2])
+
+    img = pg.image.load("fig/8.png")  #画面Surface
+    screen.blit(img, [WIDTH/2-200, HEIGHT/2])
+    pg.display.update()
+    clock = pg.time.Clock()
+    clock.time(5)
+    # time.sleep(5)
+    # game = True
+    # if 
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -51,7 +76,8 @@ def main():
         # screen.blit(bg_img, [0, 0]) 
         # screen.blit(bb_img, bb_rct)  #bb_img(爆弾)をbb_rct()の位置に表示
         if kk_rct.colliderect(bb_rct):  # こうかとんと爆弾が衝突
-            return
+            game_over()
+            return  # 重なっていなければFalse
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
@@ -76,6 +102,7 @@ def main():
         pg.display.update()
         tmr += 1
         clock.tick(50)
+
 
 
 if __name__ == "__main__":
